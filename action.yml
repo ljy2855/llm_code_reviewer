@@ -1,6 +1,6 @@
 name: "Code Review Action"
 description: "Automatically reviews PRs using an external Ollama API"
-author: "Your Name"
+author: "ljy2855"
 inputs:
   github_token:
     description: "GitHub token to authenticate API requests"
