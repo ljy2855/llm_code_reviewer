@@ -46,12 +46,6 @@ jobs:
       - name: Run the Container
         run: |
           docker run \
-            --env GITHUB_TOKEN="${{ secrets.GITHUB_TOKEN }}" \
-            --env GITHUB_OWNER="${{ github.repository_owner }}" \
-            --env GITHUB_REPOSITORY="${{ github.repository }}" \
-            --env PR_NUMBER="${{ github.event.pull_request.number }}" \
-            --env OLLAMA_API_URL="${{ secrets.OLLAMA_API_URL }}" \
-            --env OLLAMA_MODEL="llama3.1:8b" \
             --rm ${{ env.TEST_TAG }}
 
   test-action:
