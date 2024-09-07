@@ -42,3 +42,4 @@ jobs:
             --env OLLAMA_API_URL="${{ secrets.OLLAMA_API_URL }}" \
             --env OLLAMA_MODEL="llama3.1:8b" \
             --rm container-action \
+            python test_review_code.py
