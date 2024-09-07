@@ -15,4 +15,4 @@ COPY main.py .
 ENV PATH="/usr/local/bin:${PATH}"
 
 # GitHub Action의 엔트리포인트 설정
-ENTRYPOINT ["python3", "main.py"]
+ENTRYPOINT ["python3", "/app/main.py"]
