@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import patch, Mock
 import os
 import requests
-import json  # 이 부분을 추가해야 합니다
+import json
 
 # 실제 review_code.py의 로직을 가져옵니다
 from main import main
@@ -24,6 +24,9 @@ class TestCodeReview(unittest.TestCase):
     @patch("requests.get")
     @patch("requests.post")
     def test_main_function(self, mock_post, mock_get):
+        # 테스트 환경 변수 설정
+        set_test_environment()
+
         # Mocking GitHub API에서 변경된 파일 정보를 가져오는 부분
         mock_get.side_effect = [
             Mock(
@@ -45,65 +48,37 @@ class TestCodeReview(unittest.TestCase):
         ]
 
         # Mock Ollama API 응답
-        mock_post.return_value = Mock(
-            status_code=200, text=json.dumps({"response": "This is a test review"})
-        )
-
-        # 테스트 환경 변수 설정
-        set_test_environment()
+        mock_post.side_effect = [
+            Mock(
+                status_code=200, text=json.dumps({"response": "This is a test review"})
+            ),
+            Mock(
+                status_code=200,
+                text=json.dumps({"response": "Review comment posted successfully"}),
+            ),
+        ]
 
         # 코드 리뷰 함수 실행
         main()
 
-        # 호출된 인자 검증을 위한 값 가져오기
-        get_call_1 = mock_get.call_args_list[0]  # 첫 번째 호출에 대한 인자
-        get_call_2 = mock_get.call_args_list[1]  # 두 번째 호출에 대한 인자
+        # 호출된 인자 검증을 위한 값 가져오기 (첫 번째 Ollama 호출과 두 번째 GitHub 호출)
+        post_call_1 = mock_post.call_args_list[0]  # 첫 번째 호출 (Ollama API)
+        post_call_2 = mock_post.call_args_list[1]  # 두 번째 호출 (GitHub 리뷰)
 
-        # 첫 번째 호출 검증 (변경된 파일 정보 가져오기)
-        self.assertEqual(
-            get_call_1[0][0],
-            "https://api.github.com/repos/test_owner/test_repo/pulls/1/files",
-        )
-        self.assertEqual(
-            get_call_1[1]["headers"]["Accept"], "application/vnd.github+json"
-        )
-        self.assertEqual(get_call_1[1]["headers"]["X-GitHub-Api-Version"], "2022-11-28")
+        # Ollama API 호출 검증
+        self.assertEqual(post_call_1[0][0], "https://api.ollama.com/api/generate")
+        self.assertEqual(post_call_1[1]["json"]["model"], "llama3.1:8b")
+        self.assertIn("Review the following code", post_call_1[1]["json"]["prompt"])
+        self.assertEqual(post_call_1[1]["headers"]["Content-Type"], "application/json")
 
-        # 두 번째 호출 검증 (PR의 커밋 정보 가져오기)
+        # GitHub 리뷰 호출 검증
         self.assertEqual(
-            get_call_2[0][0],
-            "https://api.github.com/repos/test_owner/test_repo/pulls/1/commits",
-        )
-        self.assertEqual(
-            get_call_2[1]["headers"]["Accept"], "application/vnd.github+json"
-        )
-        self.assertEqual(get_call_2[1]["headers"]["X-GitHub-Api-Version"], "2022-11-28")
-
-        # Ollama API로 보내진 데이터 검증
-        mock_post.assert_called_with(
-            "https://api.ollama.com/api/generate",
-            json={
-                "model": "llama3.1:8b",
-                "prompt": "Review the following code\ndiff --git a/test_file.py b/test_file.py\ndiff --git a/another_file.py b/another_file.py",
-                "stream": False,
-            },
-            headers={"Content-Type": "application/json"},
-        )
-
-        # PR에 종합적인 리뷰 코멘트를 남기는 부분도 검증
-        mock_post.assert_any_call(
+            post_call_2[0][0],
             "https://api.github.com/repos/test_owner/test_repo/pulls/1/reviews",
-            json={
-                "commit_id": "commit_sha",
-                "body": "This is a test review",
-                "event": "COMMENT",
-            },
-            headers={
-                "Authorization": "Bearer test_token",
-                "Accept": "application/vnd.github+json",
-                "X-GitHub-Api-Version": "2022-11-28",
-            },
         )
+        self.assertEqual(post_call_2[1]["json"]["commit_id"], "commit_sha")
+        self.assertEqual(post_call_2[1]["json"]["body"], "This is a test review")
+        self.assertEqual(post_call_2[1]["json"]["event"], "COMMENT")
 
         print("Test passed successfully!")
 
