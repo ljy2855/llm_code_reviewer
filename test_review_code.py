@@ -12,7 +12,7 @@ from main import main
 def set_test_environment():
     os.environ["GITHUB_TOKEN"] = "test_token"
     os.environ["GITHUB_REPOSITORY"] = "test_owner/test_repo"
-    os.environ["GITHUB_PR_NUMBER"] = "1"
+    os.environ["PR_NUMBER"] = "1"
     os.environ["GITHUB_OWNER"] = "test_owner"
     os.environ["OLLAMA_MODEL"] = "llama3.1:8b"
     os.environ["PROMT"] = "Review the following code"
