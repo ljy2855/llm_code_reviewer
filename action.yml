@@ -1,21 +1,42 @@
-name: 'The name of your action here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
-
-# Define your inputs here.
+name: "Code Review Action"
+description: "Automatically reviews PRs using an external Ollama API"
+author: "Your Name"
 inputs:
-  who-to-greet:
-    description: 'Your input description here'
+  github_token:
+    description: "GitHub token to authenticate API requests"
     required: true
-    default: 'World'
-
-# Define your outputs here.
-outputs:
-  greeting:
-    description: 'Your output description here'
+  github_owner:
+    description: "The repository owner"
+    required: true
+  github_repository:
+    description: "The repository name"
+    required: true
+  pr_number:
+    description: "The pull request number"
+    required: true
+  ollama_api_url:
+    description: "The base URL of the Ollama API"
+    required: true
+  ollama_model:
+    description: "LLM model to generate the review comment"
+    required: true
+  prompt:
+    description: "The prompt to generate the review comment"
+    required: false
+    default: "Review this code:"
 
 runs:
-  using: docker
-  image: Dockerfile
-  env:
-    INPUT_WHO_TO_GREET: ${{ inputs.who-to-greet }}
+  using: "docker"
+  image: "Dockerfile"  # Dockerfile을 기반으로 이미지 빌드
+  args:
+    - ${{ inputs.github_token }}
+    - ${{ inputs.github_owner }}
+    - ${{ inputs.github_repository }}
+    - ${{ inputs.pr_number }}
+    - ${{ inputs.ollama_api_url }}
+    - ${{ inputs.ollama_model }}
+    - ${{ inputs.prompt }}
+
+branding:
+  icon: "code"
+  color: "blue"

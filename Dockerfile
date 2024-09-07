@@ -1,11 +1,15 @@
-# Set the base image to use for subsequent instructions
-FROM alpine:3.20
+# Docker 이미지 기반 (예: Python 3.9)
+FROM python:3.9-slim
 
-# Set the working directory inside the container
-WORKDIR /usr/src
+# 작업 디렉토리 설정
+WORKDIR /app
 
-# Copy any source file(s) required for the action
-COPY entrypoint.sh .
+# 필요한 패키지를 설치
+COPY requirements.txt .
+RUN pip install -r requirements.txt
 
-# Configure the container to be run as an executable
-ENTRYPOINT ["/usr/src/entrypoint.sh"]
+# 필요한 스크립트와 파일을 복사
+COPY main.py .
+
+# GitHub Action의 엔트리포인트 설정
+CMD ["python", "/app/main.py"]
