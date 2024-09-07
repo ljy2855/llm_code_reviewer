@@ -2,6 +2,7 @@ import unittest
 from unittest.mock import patch, Mock
 import os
 import requests
+import json
 
 # 실제 review_code.py의 로직을 가져옵니다
 from main import main
