@@ -1,4 +1,4 @@
-name: "Test Container Action"
+name: 'Test Container Action'
 
 on:
   pull_request:
@@ -12,12 +12,12 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Run Container Action
-        uses: ./  # 현재 레포지토리의 Docker 기반 Action 사용
+        uses: ./ # 현재 레포지토리의 Docker 기반 Action 사용
         with:
-          github_token: ${{ secrets.MY_PAT }}  # GitHub Personal Access Token
+          github_token: ${{ secrets.MY_PAT }} # GitHub Personal Access Token
           github_owner: ${{ github.repository_owner }}
           github_repository: ${{ github.repository }}
           pr_number: ${{ github.event.pull_request.number }}
           ollama_api_url: ${{ secrets.OLLAMA_API_URL }}
-          ollama_model: "llama3.1:8b"
-          prompt: "Review this code"
+          ollama_model: 'llama3.1:8b'
+          prompt: 'Review this code'
