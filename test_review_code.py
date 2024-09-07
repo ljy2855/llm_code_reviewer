@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import patch, Mock
 import os
 import requests
-import json
+import json  # 이 부분을 추가해야 합니다
 
 # 실제 review_code.py의 로직을 가져옵니다
 from main import main
@@ -55,25 +55,29 @@ class TestCodeReview(unittest.TestCase):
         # 코드 리뷰 함수 실행
         main()
 
-        # Mock이 올바르게 호출되었는지 검증 (get_changed_files() 함수에 대한 검증)
-        mock_get.assert_any_call(
-            "https://api.github.com/repos/test_owner/test_repo/pulls/1/files",
-            headers={
-                "Authorization": "Bearer test_token",
-                "Accept": "application/vnd.github+json",
-                "X-GitHub-Api-Version": "2022-11-28",
-            },
-        )
+        # 호출된 인자 검증을 위한 값 가져오기
+        get_call_1 = mock_get.call_args_list[0]  # 첫 번째 호출에 대한 인자
+        get_call_2 = mock_get.call_args_list[1]  # 두 번째 호출에 대한 인자
 
-        # Mock이 올바르게 호출되었는지 검증 (get_pr_commits() 함수에 대한 검증)
-        mock_get.assert_any_call(
-            "https://api.github.com/repos/test_owner/test_repo/pulls/1/commits",
-            headers={
-                "Authorization": "Bearer test_token",
-                "Accept": "application/vnd.github+json",
-                "X-GitHub-Api-Version": "2022-11-28",
-            },
+        # 첫 번째 호출 검증 (변경된 파일 정보 가져오기)
+        self.assertEqual(
+            get_call_1[0][0],
+            "https://api.github.com/repos/test_owner/test_repo/pulls/1/files",
         )
+        self.assertEqual(
+            get_call_1[1]["headers"]["Accept"], "application/vnd.github+json"
+        )
+        self.assertEqual(get_call_1[1]["headers"]["X-GitHub-Api-Version"], "2022-11-28")
+
+        # 두 번째 호출 검증 (PR의 커밋 정보 가져오기)
+        self.assertEqual(
+            get_call_2[0][0],
+            "https://api.github.com/repos/test_owner/test_repo/pulls/1/commits",
+        )
+        self.assertEqual(
+            get_call_2[1]["headers"]["Accept"], "application/vnd.github+json"
+        )
+        self.assertEqual(get_call_2[1]["headers"]["X-GitHub-Api-Version"], "2022-11-28")
 
         # Ollama API로 보내진 데이터 검증
         mock_post.assert_called_with(
