@@ -35,7 +35,7 @@ jobs:
         uses: actions/checkout@v3  # 코드 체크아웃
 
       - name: Run external Code Review Action
-        uses: ljy2855/llm_code_review/.github/actions/code_review@main  # 외부 액션 사용
+        uses: ljy2855/llm_code_reviewer@main 
         with:
           # fixed fields
           github_owner: ${{ github.repository_owner }}  # 레포지토리 소유자
