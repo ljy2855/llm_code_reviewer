@@ -7,7 +7,7 @@ import json
 def get_changed_files():
     GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
     GITHUB_REPOSITORY = os.getenv("GITHUB_REPOSITORY")
-    GITHUB_PR_NUMBER = os.getenv("GITHUB_PR_NUMBER")
+    GITHUB_PR_NUMBER = os.getenv("PR_NUMBER")
     headers = {
         "Authorization": f"Bearer {GITHUB_TOKEN}",
         "Accept": "application/vnd.github+json",
@@ -23,7 +23,7 @@ def get_changed_files():
 def get_pr_commits():
     GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
     GITHUB_REPOSITORY = os.getenv("GITHUB_REPOSITORY")
-    GITHUB_PR_NUMBER = os.getenv("GITHUB_PR_NUMBER")
+    GITHUB_PR_NUMBER = os.getenv("PR_NUMBER")
     headers = {
         "Authorization": f"Bearer {GITHUB_TOKEN}",
         "Accept": "application/vnd.github+json",
@@ -62,7 +62,7 @@ def get_ollama_review(code_diff):
 def post_review_comment(commit_id, body):
     GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
     GITHUB_REPOSITORY = os.getenv("GITHUB_REPOSITORY")
-    GITHUB_PR_NUMBER = os.getenv("GITHUB_PR_NUMBER")
+    GITHUB_PR_NUMBER = os.getenv("PR_NUMBER")
     headers = {
         "Authorization": f"Bearer {GITHUB_TOKEN}",
         "Accept": "application/vnd.github+json",
