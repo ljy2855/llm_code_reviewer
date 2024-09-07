@@ -14,7 +14,7 @@ jobs:
       - name: Run Container Action
         uses: ./  # 현재 레포지토리의 Docker 기반 Action 사용
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.MY_PAT }}  # GitHub Personal Access Token
           github_owner: ${{ github.repository_owner }}
           github_repository: ${{ github.repository }}
           pr_number: ${{ github.event.pull_request.number }}
