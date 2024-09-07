@@ -24,6 +24,9 @@ def get_pr_commits():
     GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
     GITHUB_REPOSITORY = os.getenv("GITHUB_REPOSITORY")
     GITHUB_PR_NUMBER = os.getenv("PR_NUMBER")
+
+    if not GITHUB_PR_NUMBER:
+        raise ValueError("PR_NUMBER environment variable is missing or None.")
     headers = {
         "Authorization": f"Bearer {GITHUB_TOKEN}",
         "Accept": "application/vnd.github+json",
