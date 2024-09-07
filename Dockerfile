@@ -11,5 +11,8 @@ RUN pip install -r requirements.txt
 # 필요한 스크립트와 파일을 복사
 COPY main.py .
 
+# 환경 변수 설정 (필요하다면 추가)
+ENV PATH="/usr/local/bin:${PATH}"
+
 # GitHub Action의 엔트리포인트 설정
 CMD ["python", "/app/main.py"]
