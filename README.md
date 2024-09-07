@@ -51,7 +51,7 @@ jobs:
  ```
 4. PR open 이후 git actions workflow 작동
 
+![스크린샷 2024-09-08 오전 2 02 52](https://github.com/user-attachments/assets/c991a66a-720d-4d8b-8a11-7cad593f63ad)
 
-![image](https://github.com/user-attachments/assets/76ddd0e4-2f31-4ccd-aa20-87c068d491fc)
 
    github api를 통한 comment 생성
