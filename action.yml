@@ -27,15 +27,19 @@ inputs:
 
 runs:
   using: "docker"
-  image: "Dockerfile"  # Dockerfile을 기반으로 이미지 빌드
+  image: "Dockerfile"
+  entrypoint: "python3"
   args:
-    - ${{ inputs.github_token }}
-    - ${{ inputs.github_owner }}
-    - ${{ inputs.github_repository }}
-    - ${{ inputs.pr_number }}
-    - ${{ inputs.ollama_api_url }}
-    - ${{ inputs.ollama_model }}
-    - ${{ inputs.prompt }}
+    - "/app/main.py"
+  
+  env:
+    GITHUB_TOKEN: ${{ inputs.github_token }}
+    GITHUB_OWNER: ${{ inputs.github_owner }}
+    GITHUB_REPOSITORY: ${{ inputs.github_repository }}
+    PR_NUMBER: ${{ inputs.pr_number }}
+    OLLAMA_API_URL: ${{ inputs.ollama_api_url }}
+    OLLAMA_MODEL: ${{ inputs.ollama_model }}
+    PROMPT: ${{ inputs.prompt }}
 
 branding:
   icon: "code"

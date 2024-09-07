@@ -2,23 +2,17 @@ import os
 import requests
 import json
 
-# GitHub 환경 변수에서 액세스 토큰과 PR 정보 가져오기
-GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
-GITHUB_REPOSITORY = os.getenv("GITHUB_REPOSITORY")
-GITHUB_PR_NUMBER = os.getenv("GITHUB_PR_NUMBER")
-GITHUB_OWNER = os.getenv("GITHUB_OWNER")
-OLLAMA_MODEL = os.getenv("OLLAMA_MODEL")
-PROMT = os.getenv("PROMT")
-# GitHub API의 헤더 설정
-headers = {
-    "Authorization": f"Bearer {GITHUB_TOKEN}",
-    "Accept": "application/vnd.github+json",
-    "X-GitHub-Api-Version": "2022-11-28",
-}
-
 
 # PR에서 변경된 파일 정보 가져오기
 def get_changed_files():
+    GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
+    GITHUB_REPOSITORY = os.getenv("GITHUB_REPOSITORY")
+    GITHUB_PR_NUMBER = os.getenv("GITHUB_PR_NUMBER")
+    headers = {
+        "Authorization": f"Bearer {GITHUB_TOKEN}",
+        "Accept": "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28",
+    }
     url = f"https://api.github.com/repos/{GITHUB_REPOSITORY}/pulls/{GITHUB_PR_NUMBER}/files"
     response = requests.get(url, headers=headers)
     response.raise_for_status()
@@ -27,6 +21,14 @@ def get_changed_files():
 
 # PR에 포함된 커밋 리스트 가져오기
 def get_pr_commits():
+    GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
+    GITHUB_REPOSITORY = os.getenv("GITHUB_REPOSITORY")
+    GITHUB_PR_NUMBER = os.getenv("GITHUB_PR_NUMBER")
+    headers = {
+        "Authorization": f"Bearer {GITHUB_TOKEN}",
+        "Accept": "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28",
+    }
     url = f"https://api.github.com/repos/{GITHUB_REPOSITORY}/pulls/{GITHUB_PR_NUMBER}/commits"
     response = requests.get(url, headers=headers)
     response.raise_for_status()
@@ -35,6 +37,8 @@ def get_pr_commits():
 
 # Ollama API로 코드 리뷰 요청
 def get_ollama_review(code_diff):
+    OLLAMA_MODEL = os.getenv("OLLAMA_MODEL")
+    PROMT = os.getenv("PROMT")
     ollama_url = os.getenv("OLLAMA_API_URL")
     headers = {"Content-Type": "application/json"}
     data = {
@@ -56,7 +60,14 @@ def get_ollama_review(code_diff):
 
 # 코드 리뷰 요청 (GitHub API로 PR에 종합적인 코멘트 추가)
 def post_review_comment(commit_id, body):
-
+    GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
+    GITHUB_REPOSITORY = os.getenv("GITHUB_REPOSITORY")
+    GITHUB_PR_NUMBER = os.getenv("GITHUB_PR_NUMBER")
+    headers = {
+        "Authorization": f"Bearer {GITHUB_TOKEN}",
+        "Accept": "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28",
+    }
     url = f"https://api.github.com/repos/{GITHUB_REPOSITORY}/pulls/{GITHUB_PR_NUMBER}/reviews"
 
     data = {
