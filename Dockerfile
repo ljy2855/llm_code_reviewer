@@ -13,3 +13,5 @@ COPY main.py .
 
 # 환경 변수 설정 (필요하다면 추가)
 ENV PATH="/usr/local/bin:${PATH}"
+
+RUN chmod +x main.py
