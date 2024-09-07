@@ -15,16 +15,6 @@ jobs:
     name: Docker Tests
     runs-on: ubuntu-latest
 
-    # Run a local registry to push to
-    services:
-      registry:
-        image: registry:2
-        ports:
-          - 5001:5000
-
-    env:
-      TEST_TAG: localhost:5001/actions/container-action:latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -36,11 +26,10 @@ jobs:
           driver-opts: network=host
 
       - name: Build the Container
-        uses: docker/build-push-action@v6
-        with:
-          dockerfile: Dockerfile.dev
-          push: true
-          tags: ${{ env.TEST_TAG }}
+        run: |
+          docker build \
+            -f Dockerfile.dev \
+            -t container-action .
 
       - name: Run the Container
         run: |
@@ -51,5 +40,5 @@ jobs:
             --env PR_NUMBER="${{ github.event.pull_request.number }}" \
             --env OLLAMA_API_URL="${{ secrets.OLLAMA_API_URL }}" \
             --env OLLAMA_MODEL="llama3.1:8b" \
-            --rm ${{ env.TEST_TAG }} \
+            --rm container-action \
             python test_review_code.py
