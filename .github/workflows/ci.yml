@@ -51,4 +51,5 @@ jobs:
             --env PR_NUMBER="${{ github.event.pull_request.number }}" \
             --env OLLAMA_API_URL="${{ secrets.OLLAMA_API_URL }}" \
             --env OLLAMA_MODEL="llama3.1:8b" \
-            --rm ${{ env.TEST_TAG }}
+            --rm ${{ env.TEST_TAG }} \
+            python test_review_code.py
