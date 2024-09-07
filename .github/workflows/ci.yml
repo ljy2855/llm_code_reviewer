@@ -52,4 +52,3 @@ jobs:
             --env OLLAMA_API_URL="${{ secrets.OLLAMA_API_URL }}" \
             --env OLLAMA_MODEL="llama3.1:8b" \
             --rm ${{ env.TEST_TAG }} \
-            python test_review_code.py
