@@ -47,25 +47,3 @@ jobs:
         run: |
           docker run \
             --rm ${{ env.TEST_TAG }}
-
-  test-action:
-    name: GitHub Actions Test
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Test Local Action
-        uses: ./
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          github_owner: ${{ github.repository_owner }}
-          github_repository: ${{ github.repository }}
-          pr_number: ${{ github.event.pull_request.number }}
-          ollama_api_url: ${{ secrets.OLLAMA_API_URL }}
-          ollama_model: "llama3.1:8b"
-          prompt: "Review this code:"
-
-      - name: Print Output
-        run: echo "Code review action completed."
