@@ -28,9 +28,7 @@ inputs:
 runs:
   using: 'docker'
   image: 'Dockerfile'
-  entrypoint: 'python3'
-  args:
-    - '/app/main.py'
+  entrypoint: ["python3", "/app/main.py"]
 
   env:
     GITHUB_TOKEN: ${{ inputs.github_token }}
