@@ -6,11 +6,13 @@ WORKDIR /app
 
 # 필요한 패키지를 설치
 COPY requirements.txt .
-RUN pip install -r requirements.txt
+
+RUN pip install --no-cache-dir  -r requirements.txt
 
 # 필요한 스크립트 및 파일 복사
 COPY test_review_code.py .
+
 COPY main.py .
 
 # 스크립트 실행에 필요한 기본 명령어 설정
-CMD ["python", "test_review_code.py"]  # 테스트 스크립트를 기본 실행
+CMD ["python", "test_review_code.py"]

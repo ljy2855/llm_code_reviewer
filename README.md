@@ -9,12 +9,14 @@
 
 ## How to use
 
-1. Ollama 서버 설정 Ollama 서버는 모델을 통해 코드 변경사항을 통한 리뷰 제공.
-   외부 서버를 설정하고 `OLLAMA_API_URL`을 GitHub Secrets에 추가.
+1. Ollama 서버 설정 
+
+    Ollama 서버는 모델을 통해 코드 변경사항을 통한 리뷰 제공. 외부 서버를 설정하고 `OLLAMA_API_URL`을 GitHub Secrets에 추가.
    [ollama api docs](https://github.com/ollama/ollama/blob/main/docs/api.md)
 
-2. Personal Access Token 설정 GitHub API을 위해 **Personal Access Token (PAT)**
-   을 발급받아, 이를 `MY_PAT` 이름으로 GitHub Secrets에 저장.
+2. Personal Access Token 설정 
+
+    GitHub API을 위해 **Personal Access Token (PAT)** 을 발급받아, 이를 `MY_PAT` 이름으로 GitHub Secrets에 저장.
    [github api docs](https://docs.github.com/ko/rest/pulls/reviews?apiVersion=2022-11-28#create-a-review-for-a-pull-request)
 
 3. workflow 작성
