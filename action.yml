@@ -1,4 +1,4 @@
-name: 'Code Review Action'
+name: 'LLM Code Review Action'
 description: 'Automatically reviews PRs using an external Ollama API'
 author: 'ljy2855'
 inputs:
