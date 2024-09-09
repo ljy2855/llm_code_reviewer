@@ -2,7 +2,7 @@ name: 'Test Container Action'
 
 on:
   pull_request:
-    types: [opened]
+    types: [review_requested]
 
 jobs:
   test-action:

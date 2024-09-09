@@ -29,7 +29,7 @@ jobs:
         env:
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VALIDATE_ALL_CODEBASE: false  # 모든 코드를 검사하지 않음
+          VALIDATE_ALL_CODEBASE: true 
           
           # 필요한 파일 타입 린터만 활성화
           LINTER_RULES_PATH: .github/linters
