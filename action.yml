@@ -1,37 +1,37 @@
-name: "Code Review Action"
-description: "Automatically reviews PRs using an external Ollama API"
-author: "ljy2855"
+name: 'Code Review Action'
+description: 'Automatically reviews PRs using an external Ollama API'
+author: 'ljy2855'
 inputs:
   github_token:
-    description: "GitHub token to authenticate API requests"
+    description: 'GitHub token to authenticate API requests'
     required: true
   github_owner:
-    description: "The repository owner"
+    description: 'The repository owner'
     required: true
   github_repository:
-    description: "The repository name"
+    description: 'The repository name'
     required: true
   pr_number:
-    description: "The pull request number"
+    description: 'The pull request number'
     required: true
   ollama_api_url:
-    description: "The base URL of the Ollama API"
+    description: 'The base URL of the Ollama API'
     required: true
   ollama_model:
-    description: "LLM model to generate the review comment"
+    description: 'LLM model to generate the review comment'
     required: true
   prompt:
-    description: "The prompt to generate the review comment"
+    description: 'The prompt to generate the review comment'
     required: false
-    default: "Review this code:"
+    default: 'Review this code:'
 
 runs:
-  using: "docker"
-  image: "Dockerfile"
-  entrypoint: "python3"
+  using: 'docker'
+  image: 'Dockerfile'
+  entrypoint: 'python3'
   args:
-    - "/app/main.py"
-  
+    - '/app/main.py'
+
   env:
     GITHUB_TOKEN: ${{ inputs.github_token }}
     GITHUB_OWNER: ${{ inputs.github_owner }}
@@ -42,5 +42,5 @@ runs:
     PROMPT: ${{ inputs.prompt }}
 
 branding:
-  icon: "code"
-  color: "blue"
+  icon: 'code'
+  color: 'blue'

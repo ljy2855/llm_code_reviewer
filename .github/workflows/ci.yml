@@ -8,7 +8,7 @@ on:
 
 permissions:
   contents: read
-  pull-requests: write  # PR 관련 API에 대한 권한 추가 (PR 파일 목록을 가져올 수 있도록 함)
+  pull-requests: write # PR 관련 API에 대한 권한 추가 (PR 파일 목록을 가져올 수 있도록 함)
 
 jobs:
   test-docker:
