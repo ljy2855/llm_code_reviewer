@@ -16,3 +16,5 @@ COPY main.py .
 ENV PATH="/usr/local/bin:${PATH}"
 
 RUN chmod +x main.py
+
+ENTRYPOINT ["python3", "/app/main.py"]
