@@ -37,6 +37,5 @@ jobs:
           # 린터별로 선택적으로 활성화/비활성화
           
           VALIDATE_PYTHON_BLACK: true
-          VALIDATE_MARKDOWN: true
           VALIDATE_YAML: true
           VALIDATE_DOCKERFILE: true

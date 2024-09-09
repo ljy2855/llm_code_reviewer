@@ -6,7 +6,8 @@ WORKDIR /app
 
 # 필요한 패키지를 설치
 COPY requirements.txt .
-RUN pip install -r requirements.txt
+
+RUN pip install --no-cache-dir  -r requirements.txt
 
 # 필요한 스크립트와 파일을 복사
 COPY main.py .
