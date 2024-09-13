@@ -1,31 +1,14 @@
 import unittest
 from unittest.mock import patch, Mock
 import os
-import requests
-import json
-
-# 실제 review_code.py의 로직을 가져옵니다
-from main import main
+from src.main import main
 
 
-# 테스트를 위한 환경변수 설정
-def set_test_environment():
-    os.environ["GITHUB_TOKEN"] = "test_token"
-    os.environ["GITHUB_REPOSITORY"] = "test_owner/test_repo"
-    os.environ["PR_NUMBER"] = "1"
-    os.environ["GITHUB_OWNER"] = "test_owner"
-    os.environ["OLLAMA_MODEL"] = "llama3.1:8b"
-    os.environ["OLLAMA_API_URL"] = "https://api.ollama.com"
-
-
-class TestCodeReview(unittest.TestCase):
+class TestMainIntegration(unittest.TestCase):
 
     @patch("requests.get")
     @patch("requests.post")
     def test_main_function(self, mock_post, mock_get):
-        # 테스트 환경 변수 설정
-        set_test_environment()
-
         # Mocking GitHub API에서 변경된 파일 정보를 가져오는 부분
         mock_get.side_effect = [
             Mock(
@@ -60,6 +43,14 @@ class TestCodeReview(unittest.TestCase):
             ),
         ]
 
+        # 테스트 환경 변수 설정
+        os.environ["GITHUB_TOKEN"] = "test_token"
+        os.environ["GITHUB_REPOSITORY"] = "test_owner/test_repo"
+        os.environ["PR_NUMBER"] = "1"
+        os.environ["GITHUB_OWNER"] = "test_owner"
+        os.environ["OLLAMA_MODEL"] = "llama3.1:8b"
+        os.environ["OLLAMA_API_URL"] = "https://api.ollama.com"
+
         # 코드 리뷰 함수 실행
         main()
 
@@ -81,7 +72,7 @@ class TestCodeReview(unittest.TestCase):
         self.assertEqual(post_call_2[1]["json"]["body"], "This is a test review")
         self.assertEqual(post_call_2[1]["json"]["event"], "COMMENT")
 
-        print("Test passed successfully!")
+        print("Integration test passed successfully!")
 
 
 if __name__ == "__main__":
