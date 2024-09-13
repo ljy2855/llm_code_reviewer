@@ -14,7 +14,6 @@ jobs:
       - name: Run Container Action
         uses: ljy2855/llm_code_reviewer@main
         with:
-          github_token: ${{ secrets.MY_PAT }} # GitHub Personal Access Token
           github_owner: ${{ github.repository_owner }}
           github_repository: ${{ github.repository }}
           pr_number: ${{ github.event.pull_request.number }}
