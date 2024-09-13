@@ -32,7 +32,8 @@ jobs:
             -t container-action:latest . \
             --load  # 빌드한 이미지를 로컬로 로드
 
-      - name: Run the Container
+      - name: Run the Container for Pull Request
+        if: github.event_name == 'pull_request'
         run: |
           docker run \
             --env GITHUB_TOKEN="${{ secrets.GITHUB_TOKEN }}" \
@@ -42,4 +43,16 @@ jobs:
             --env OLLAMA_API_URL="${{ secrets.OLLAMA_API_URL }}" \
             --env OLLAMA_MODEL="llama3.1:8b" \
             --rm container-action \
-            python test_review_code.py
+            python3 -m unittest discover -s tests -p "test_*.py"
+
+      - name: Run the Container for Push
+        if: github.event_name == 'push'
+        run: |
+          docker run \
+            --env GITHUB_TOKEN="${{ secrets.GITHUB_TOKEN }}" \
+            --env GITHUB_OWNER="${{ github.repository_owner }}" \
+            --env GITHUB_REPOSITORY="${{ github.repository }}" \
+            --env OLLAMA_API_URL="${{ secrets.OLLAMA_API_URL }}" \
+            --env OLLAMA_MODEL="llama3.1:8b" \
+            --rm container-action \
+            python3 -m unittest discover -s tests -p "test_*.py"
