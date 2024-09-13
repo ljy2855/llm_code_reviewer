@@ -14,16 +14,26 @@ inputs:
   pr_number:
     description: 'The pull request number'
     required: true
+  pr_title:
+    description: 'The pull request title'
+    required: true
+  pr_body:
+    description: 'The pull request body'
+    required: true
   ollama_api_url:
     description: 'The base URL of the Ollama API'
     required: true
   ollama_model:
     description: 'LLM model to generate the review comment'
     required: true
-  prompt:
-    description: 'The prompt to generate the review comment'
+  prompt_type:
+    description: 'The type of prompt to generate the review comment'
     required: false
-    default: 'Review this code:'
+    default: 'GENERAL_REVIEW'
+  prompt_language:
+    description: 'The language of the prompt to generate the review comment'
+    required: false
+    default: 'EN'
 
 runs:
   using: 'docker'
@@ -37,9 +47,12 @@ runs:
     GITHUB_OWNER: ${{ inputs.github_owner }}
     GITHUB_REPOSITORY: ${{ inputs.github_repository }}
     PR_NUMBER: ${{ inputs.pr_number }}
+    PR_TITLE: ${{ inputs.pr_title }}
+    PR_BODY: ${{ inputs.pr_body }}
     OLLAMA_API_URL: ${{ inputs.ollama_api_url }}
     OLLAMA_MODEL: ${{ inputs.ollama_model }}
-    PROMPT: ${{ inputs.prompt }}
+    PROMPT_TYPE: ${{ inputs.prompt_type }}
+    PROMPT_LANGUAGE: ${{ inputs.prompt_language }}
 
 branding:
   icon: 'code'

@@ -15,7 +15,6 @@ def set_test_environment():
     os.environ["PR_NUMBER"] = "1"
     os.environ["GITHUB_OWNER"] = "test_owner"
     os.environ["OLLAMA_MODEL"] = "llama3.1:8b"
-    os.environ["PROMT"] = "Review the following code"
     os.environ["OLLAMA_API_URL"] = "https://api.ollama.com"
 
 
@@ -50,11 +49,14 @@ class TestCodeReview(unittest.TestCase):
         # Mock Ollama API 응답
         mock_post.side_effect = [
             Mock(
-                status_code=200, text=json.dumps({"response": "This is a test review"})
+                status_code=200,
+                json=Mock(return_value={"response": "This is a test review"}),
             ),
             Mock(
                 status_code=200,
-                text=json.dumps({"response": "Review comment posted successfully"}),
+                json=Mock(
+                    return_value={"response": "Review comment posted successfully"}
+                ),
             ),
         ]
 
@@ -68,7 +70,6 @@ class TestCodeReview(unittest.TestCase):
         # Ollama API 호출 검증
         self.assertEqual(post_call_1[0][0], "https://api.ollama.com/api/generate")
         self.assertEqual(post_call_1[1]["json"]["model"], "llama3.1:8b")
-        self.assertIn("Review the following code", post_call_1[1]["json"]["prompt"])
         self.assertEqual(post_call_1[1]["headers"]["Content-Type"], "application/json")
 
         # GitHub 리뷰 호출 검증

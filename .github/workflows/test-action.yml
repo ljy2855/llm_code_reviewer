@@ -2,7 +2,7 @@ name: 'Test Container Action'
 
 on:
   pull_request:
-    types: [review_requested]
+    types: [opened]
 
 jobs:
   test-action:
@@ -18,6 +18,9 @@ jobs:
           github_owner: ${{ github.repository_owner }}
           github_repository: ${{ github.repository }}
           pr_number: ${{ github.event.pull_request.number }}
+          pr_title: ${{ github.event.pull_request.title }}
+          pr_body: ${{ github.event.pull_request.body }}
           ollama_api_url: ${{ secrets.OLLAMA_API_URL }}
           ollama_model: 'llama3.1:8b'
-          prompt: 'Review this code'
+          prompt_type: 'GENERAL_REVIEW'
+          prompt_language: 'KR'
