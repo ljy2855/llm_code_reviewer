@@ -1,13 +1,18 @@
 from github_api import get_changed_files, get_pr_commits, post_review_comment
 from ollama_api import get_ollama_review
+from auth import generate_jwt, get_installation_token
 
 
 def main():
+
+    jwt_token = generate_jwt()
+    installation_token = get_installation_token(jwt_token)
+
     # PR에서 변경된 파일 정보 가져오기
-    changed_files = get_changed_files()
+    changed_files = get_changed_files(installation_token)
 
     # PR에서 커밋 리스트 가져오기
-    commits = get_pr_commits()
+    commits = get_pr_commits(installation_token)
 
     # 첫 번째 커밋을 사용 (다른 로직으로 원하는 커밋을 선택할 수 있습니다)
     if commits:
@@ -24,7 +29,7 @@ def main():
         review_comment = get_ollama_review(code_diff)
 
         # PR에 종합적인 코멘트 남기기
-        post_review_comment(commit_id, review_comment)
+        post_review_comment(commit_id, review_comment, installation_token)
     else:
         print("코드 변경 사항이 없습니다.")
 

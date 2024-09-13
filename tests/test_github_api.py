@@ -5,6 +5,7 @@ from src.github_api import get_changed_files, get_pr_commits
 
 
 class TestGitHubAPI(unittest.TestCase):
+    test_token = "test_token"
 
     @patch("requests.get")
     def test_get_changed_files(self, mock_get):
@@ -20,7 +21,7 @@ class TestGitHubAPI(unittest.TestCase):
             ),
         )
 
-        files = get_changed_files()
+        files = get_changed_files(self.test_token)
         self.assertEqual(len(files), 1)
         self.assertEqual(files[0]["filename"], "test_file.py")
 
@@ -31,7 +32,7 @@ class TestGitHubAPI(unittest.TestCase):
             json=Mock(return_value=[{"sha": "commit_sha"}]),
         )
 
-        commits = get_pr_commits()
+        commits = get_pr_commits(self.test_token)
         self.assertEqual(len(commits), 1)
         self.assertEqual(commits[0]["sha"], "commit_sha")
 
