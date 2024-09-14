@@ -25,22 +25,23 @@ class TestMainIntegration(unittest.TestCase):
                         },
                     ]
                 ),
-            ),
-            Mock(status_code=200, json=Mock(return_value=[{"sha": "commit_sha"}])),
+            ),  # PR 변경 파일을 확인하는 API 응답
+            Mock(
+                status_code=200, json=Mock(return_value=[{"sha": "commit_sha"}])
+            ),  # PR 커밋 리스트를 가져오는 API 응답
         ]
 
-        # Mock Ollama API 응답
         mock_post.side_effect = [
             Mock(
                 status_code=200,
                 json=Mock(return_value={"response": "This is a test review"}),
-            ),
+            ),  # Mock Ollama API 응답
             Mock(
                 status_code=200,
                 json=Mock(
                     return_value={"response": "Review comment posted successfully"}
                 ),
-            ),
+            ),  # Mock GitHub PR comment API 응답
         ]
 
         # 테스트 환경 변수 설정

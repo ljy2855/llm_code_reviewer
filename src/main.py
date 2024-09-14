@@ -1,7 +1,6 @@
 import os
 from github_api import get_changed_files, get_pr_commits, post_review_comment
 from ollama_api import get_ollama_review
-from auth import get_access_token
 
 
 def main():
