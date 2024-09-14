@@ -4,6 +4,10 @@ on:
   pull_request:
     types: [opened]
 
+permissions:
+  contents: read # 콘텐츠 접근 권한 (리포지토리 파일 읽기)
+  pull-requests: write
+
 jobs:
   test-action:
     runs-on: ubuntu-latest
@@ -11,10 +15,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.head.ref }}  # PR에서 체크아웃할 브랜치를 명확히 지정
+          ref: ${{ github.event.pull_request.head.ref }} # PR에서 체크아웃할 브랜치를 명확히 지정
 
       - name: Run Container Action
-        uses: ./
+        uses: ljy2855/llm-code-reviewer@main
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           github_owner: ${{ github.repository_owner }}

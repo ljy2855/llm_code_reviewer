@@ -5,16 +5,12 @@ from src.main import main
 
 
 class TestMainIntegration(unittest.TestCase):
-    test_token = "test_token"
 
     @patch("requests.get")
     @patch("requests.post")
     def test_main_function(self, mock_post, mock_get):
         # Mocking GitHub API에서 변경된 파일 정보를 가져오는 부분
         mock_get.side_effect = [
-            Mock(
-                status_code=200, json=Mock(return_value={"id": "installation_id"})
-            ),  # "https://api.github.com/app/installations" 호출
             Mock(
                 status_code=200,
                 json=Mock(
@@ -29,25 +25,23 @@ class TestMainIntegration(unittest.TestCase):
                         },
                     ]
                 ),
-            ),
-            Mock(status_code=200, json=Mock(return_value=[{"sha": "commit_sha"}])),
+            ),  # PR 변경 파일을 확인하는 API 응답
+            Mock(
+                status_code=200, json=Mock(return_value=[{"sha": "commit_sha"}])
+            ),  # PR 커밋 리스트를 가져오는 API 응답
         ]
 
         mock_post.side_effect = [
             Mock(
                 status_code=200,
-                json=Mock(return_value={"token": "test_token"}),
-            ),  # https://api.github.com/app/installations/{installation_id}/access_tokens" 호출
-            Mock(
-                status_code=200,
                 json=Mock(return_value={"response": "This is a test review"}),
-            ),
+            ),  # Mock Ollama API 응답
             Mock(
                 status_code=200,
                 json=Mock(
                     return_value={"response": "Review comment posted successfully"}
                 ),
-            ),
+            ),  # Mock GitHub PR comment API 응답
         ]
 
         # 테스트 환경 변수 설정
@@ -63,22 +57,21 @@ class TestMainIntegration(unittest.TestCase):
 
         # 호출된 인자 검증을 위한 값 가져오기 (첫 번째 Ollama 호출과 두 번째 GitHub 호출)
         post_call_1 = mock_post.call_args_list[0]  # 첫 번째 호출 (Ollama API)
-        post_call_2 = mock_post.call_args_list[1]  # 첫 번째 호출 (Ollama API)
-        post_call_3 = mock_post.call_args_list[2]  # 두 번째 호출 (GitHub 리뷰)
+        post_call_2 = mock_post.call_args_list[1]  # 두 번째 호출 (GitHub 리뷰)
 
         # Ollama API 호출 검증
-        self.assertEqual(post_call_2[0][0], "https://api.ollama.com/api/generate")
-        self.assertEqual(post_call_2[1]["json"]["model"], "llama3.1:8b")
-        self.assertEqual(post_call_2[1]["headers"]["Content-Type"], "application/json")
+        self.assertEqual(post_call_1[0][0], "https://api.ollama.com/api/generate")
+        self.assertEqual(post_call_1[1]["json"]["model"], "llama3.1:8b")
+        self.assertEqual(post_call_1[1]["headers"]["Content-Type"], "application/json")
 
         # GitHub 리뷰 호출 검증
         self.assertEqual(
-            post_call_3[0][0],
+            post_call_2[0][0],
             "https://api.github.com/repos/test_owner/test_repo/pulls/1/reviews",
         )
-        self.assertEqual(post_call_3[1]["json"]["commit_id"], "commit_sha")
-        self.assertEqual(post_call_3[1]["json"]["body"], "This is a test review")
-        self.assertEqual(post_call_3[1]["json"]["event"], "COMMENT")
+        self.assertEqual(post_call_2[1]["json"]["commit_id"], "commit_sha")
+        self.assertEqual(post_call_2[1]["json"]["body"], "This is a test review")
+        self.assertEqual(post_call_2[1]["json"]["event"], "COMMENT")
 
         print("Integration test passed successfully!")
 

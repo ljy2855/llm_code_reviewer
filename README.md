@@ -1,62 +1,80 @@
 # LLM code reviewer
 
-`GitHub Actions`를 통해 **Pull Request(PR)** 에 대해 자동화된 코드 리뷰를 제공.
+Provides **automated code reviews** for Pull Requests (PR) using `GitHub Actions`
 
 ## Requriements
 
-- external Ollama server
-- Personal Access Token
+- External Ollama server
 
 ## How to use
 
-1. Ollama 서버 설정 
+1. Setup Ollama Server (api server)
 
-    Ollama 서버는 모델을 통해 코드 변경사항을 통한 리뷰 제공. 외부 서버를 설정하고 `OLLAMA_API_URL`을 GitHub Secrets에 추가.
-   [ollama api docs](https://github.com/ollama/ollama/blob/main/docs/api.md)
+    The Ollama server provides reviews using LLM model. Set up the external Ollama server and add the `OLLAMA_API_URL` to your GitHub Secrets.
 
-2. Personal Access Token 설정 
+   [Ollama API Docs](https://github.com/ollama/ollama/blob/main/docs/api.md)
 
-    GitHub API을 위해 **Personal Access Token (PAT)** 을 발급받아, 이를 `MY_PAT` 이름으로 GitHub Secrets에 저장.
-   [github api docs](https://docs.github.com/ko/rest/pulls/reviews?apiVersion=2022-11-28#create-a-review-for-a-pull-request)
-
-3. workflow 작성
+    **Example:** `https://ollama-server-url/api`
+2. Write workflow script
 
 ```yaml
-name: 'Use Code Review Action'
+name: 'Test Container Action'
 
 on:
-  pull_request_target:
-    types: [opened] # PR이 열릴 때 트리거
+  pull_request:
+    types: [opened] # PR open시 자동 코드 리뷰 요청
 
 permissions:
-  issues: write # GitHub API에서 이슈 및 PR에 코멘트를 달 수 있는 권한 부여
+  contents: read   # 콘텐츠 접근 권한 (PR 변경 사항 읽기)
+  pull-requests: write # PR comment 작성 권한
 
 jobs:
-  code-review:
-    runs-on: ubuntu-latest # 최신 Ubuntu 환경에서 실행
-
+  test-action:
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout the code
-        uses: actions/checkout@v3 # 코드 체크아웃
-
-      - name: Run external Code Review Action
-        uses: ljy2855/llm_code_reviewer@main
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
-          # fixed fields
-          github_owner: ${{ github.repository_owner }} # 레포지토리 소유자
-          pr_number: ${{ github.event.pull_request.number }} # PR 번호
-          repository: ${{ github.repository }} # 레포지토리 이름
+
+      - name: Run Container Action
+        uses: ljy2855/llm_code_reviewer@v1
+        with:
+          # fixed field
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_owner: ${{ github.repository_owner }}
+          github_repository: ${{ github.repository }}
+          pr_number: ${{ github.event.pull_request.number }}
+          pr_title: ${{ github.event.pull_request.title }}
+          pr_body: ${{ github.event.pull_request.body }}
 
           # you might fill
-          github_token: ${{ secrets.MY_PAT }} # GitHub Personal Access Token
-          ollama_api_url: ${{ secrets.OLLAMA_API_URL }} # Ollama API URL
-          ollama_model: 'llama3.1:8b' # LLM 모델 설정 (예: "llama3.1:8b")
-          prompt: 'Review this code :' # 코드 리뷰를 위한 프롬프트 (선택 사항)
+          ollama_api_url: ${{ secrets.OLLAMA_API_URL }}
+          ollama_model: 'llama3.1:8b'
+
+          # optional field
+          prompt_type: 'GENERAL_REVIEW'
+          prompt_language: 'EN' 
+
 ```
 
-4. PR open 이후 git actions workflow 작동
+
+**Field Description**
+| Field             | Default Value     | Description                                                                                                      | Required |
+|-------------------|-------------------|------------------------------------------------------------------------------------------------------------------|----------|
+| `github_token`     | N/A               | The GitHub token for authentication, typically set as `${{ secrets.GITHUB_TOKEN }}`.                              | Yes      |
+| `github_owner`     | N/A               | The owner of the repository.                                                                                     | Yes      |
+| `github_repository`| N/A               | The name of the repository.                                                                                      | Yes      |
+| `pr_number`        | N/A               | The number of the pull request.                                                                                  | Yes      |
+| `pr_title`         | N/A               | The title of the pull request.                                                                                   | Yes      |
+| `pr_body`          | N/A               | The body/description of the pull request.                                                                        | Yes      |
+| `ollama_api_url`   | N/A               | The base URL of the Ollama API for generating the review.                                                        | Yes      |
+| `ollama_model`     | `llama3.1:8b`     | The LLM model used for generating the review comment.                                                            | Yes      |
+| `prompt_type`      | `GENERAL_REVIEW`  | Defines the type of review: `GENERAL_REVIEW`, `SECURITY_REVIEW`, `FUNCTIONALITY_REVIEW`, `CODE_STYLE_REVIEW`, `TEST_COVERAGE_REVIEW` | No       |
+| `prompt_language`  | `EN`              | Specifies the language for the review comment (e.g., `EN`, `KR`).                                                | No       |
+
+
+3. Workflow Run
 
 ![스크린샷 2024-09-08 오전 2 02 52](https://github.com/user-attachments/assets/c991a66a-720d-4d8b-8a11-7cad593f63ad)
 
 
-github api를 통한 comment 생성
