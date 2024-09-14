@@ -49,9 +49,10 @@ jobs:
 
           # you might fill
           ollama_api_url: ${{ secrets.OLLAMA_API_URL }}
-          ollama_model: 'llama3.1:8b'
+          
 
           # optional field
+          ollama_model: 'llama3.1:8b'
           prompt_type: 'GENERAL_REVIEW'
           prompt_language: 'EN' 
 
@@ -68,7 +69,7 @@ jobs:
 | `pr_title`         | N/A               | The title of the pull request.                                                                                   | Yes      |
 | `pr_body`          | N/A               | The body/description of the pull request.                                                                        | Yes      |
 | `ollama_api_url`   | N/A               | The base URL of the Ollama API for generating the review.                                                        | Yes      |
-| `ollama_model`     | `llama3.1:8b`     | The LLM model used for generating the review comment.                                                            | Yes      |
+| `ollama_model`     | `llama3.1:8b`     | The LLM model used for generating the review comment.                                                            | No      |
 | `prompt_type`      | `GENERAL_REVIEW`  | Defines the type of review: `GENERAL_REVIEW`, `SECURITY_REVIEW`, `FUNCTIONALITY_REVIEW`, `CODE_STYLE_REVIEW`, `TEST_COVERAGE_REVIEW` | No       |
 | `prompt_language`  | `EN`              | Specifies the language for the review comment (e.g., `EN`, `KR`).                                                | No       |
 
