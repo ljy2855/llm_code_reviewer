@@ -43,12 +43,12 @@ def get_pr_commits(installation_token):
 
 
 # GitHub에 종합적인 리뷰 코멘트 추가
-def post_review_comment(commit_id, body, installation_token):
+def post_review_comment(commit_id, body, github_token):
     GITHUB_REPOSITORY = os.getenv("GITHUB_REPOSITORY")
     GITHUB_PR_NUMBER = os.getenv("PR_NUMBER")
 
     headers = {
-        "Authorization": f"Bearer {installation_token}",
+        "Authorization": f"Bearer {github_token}",
         "Accept": "application/vnd.github+json",
     }
 

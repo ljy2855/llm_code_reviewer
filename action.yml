@@ -45,6 +45,7 @@ runs:
   env:
     GITHUB_OWNER: ${{ inputs.github_owner }}
     GITHUB_REPOSITORY: ${{ inputs.github_repository }}
+    GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
     PR_NUMBER: ${{ inputs.pr_number }}
     PR_TITLE: ${{ inputs.pr_title }}
     PR_BODY: ${{ inputs.pr_body }}
@@ -52,7 +53,7 @@ runs:
     OLLAMA_MODEL: ${{ inputs.ollama_model }}
     PROMPT_TYPE: ${{ inputs.prompt_type }}
     PROMPT_LANGUAGE: ${{ inputs.prompt_language }}
-    GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
+    
 
 branding:
   icon: 'code'

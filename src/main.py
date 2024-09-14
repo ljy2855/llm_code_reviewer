@@ -1,3 +1,4 @@
+import os
 from github_api import get_changed_files, get_pr_commits, post_review_comment
 from ollama_api import get_ollama_review
 from auth import get_access_token
@@ -5,7 +6,7 @@ from auth import get_access_token
 
 def main():
 
-    access_token = get_access_token()
+    access_token = os.getenv("GITHUB_TOKEN")
     # PR에서 변경된 파일 정보 가져오기
     changed_files = get_changed_files(access_token)
 
