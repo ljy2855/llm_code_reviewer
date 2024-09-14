@@ -13,7 +13,7 @@ class TestMainIntegration(unittest.TestCase):
         # Mocking GitHub API에서 변경된 파일 정보를 가져오는 부분
         mock_get.side_effect = [
             Mock(
-                status_code=200, json=Mock(return_value=[{"id": "installation_id"}])
+                status_code=200, json=Mock(return_value={"id": "installation_id"})
             ),  # "https://api.github.com/app/installations" 호출
             Mock(
                 status_code=200,
@@ -33,7 +33,6 @@ class TestMainIntegration(unittest.TestCase):
             Mock(status_code=200, json=Mock(return_value=[{"sha": "commit_sha"}])),
         ]
 
-        # Mock Ollama API 응답
         mock_post.side_effect = [
             Mock(
                 status_code=200,
@@ -52,23 +51,7 @@ class TestMainIntegration(unittest.TestCase):
         ]
 
         # 테스트 환경 변수 설정
-        os.environ["APP_ID"] = "test_id"
-        os.environ[
-            "APP_PRIVATE_KEY"
-        ] = """
------BEGIN PRIVATE KEY-----
-MIIB1QIBADANBgkqhkiG9w0BAQEFAASCAb8wggG7AgEAAl0DH3YqFv4mzt67RAAm
-KqZSY32GtoUqkLXzSJOIew2ofiKx3ojdJvL69pXZLKNoKkKb8RQKyWdhAIkbTEFX
-3k8mroXea5NMfB9NAH0AASQ6uoK5XYs7mMubQgu1dhcCAwEAAQJdAjrb+LAUaQe8
-+cFTze0UeK48Ow5nxn4wvniriIA9v3vaMGJ0Hl6qkFO1qq76O+uvSehxPHnzBrfs
-SXkQ8nScyeGpoTpn0DCnMnFRiY1hAMy6SqVdC4t7UP9u6oCBAi8B+POU6nCyUOnL
-FlPVGFoBxSoxC7q7tJytq+xaPfGBN63AT3sdnXm06YAH1uE/1wIvAZVPf+1sDjIP
-c4hFNPzIPh/x1M3qDN9eBr6tdPwymuPmpQ1lik/b9ZpMfXGns8ECLwDTVfcci+BF
-tyP1i06jq4AUKg1u8E+BTxXs37YBOOOxDvpvCYMiln6eP6SITavvAi8A6n71d8rl
-p6by4+uOjZXZA6hpw7zfN7hx1I4MugEZRjPiWI7f5/ZN8bjBdylcwQIvAQp1f9vQ
-S+P5ktRlO7vEm10LtKotJ85Rp+le7PX56re+nntKVZFsliKW0yPmWJE=
------END PRIVATE KEY-----
-"""
+        os.environ["GITHUB_TOKEN"] = "test_token"
         os.environ["GITHUB_REPOSITORY"] = "test_owner/test_repo"
         os.environ["PR_NUMBER"] = "1"
         os.environ["GITHUB_OWNER"] = "test_owner"
