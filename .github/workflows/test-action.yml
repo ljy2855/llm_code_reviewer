@@ -12,8 +12,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run Container Action
-        uses: ljy2855/llm_code_reviewer@main
+        uses: ./
         with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           github_owner: ${{ github.repository_owner }}
           github_repository: ${{ github.repository }}
           pr_number: ${{ github.event.pull_request.number }}
