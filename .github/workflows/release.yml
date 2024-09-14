@@ -63,8 +63,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: "v${{ steps.increment_version.outputs.new_version }}"
-          release_name: "v${{ steps.increment_version.outputs.new_version }}"
-          body: "Release notes for version v${{ steps.increment_version.outputs.new_version }}"
+          tag_name: 'v${{ steps.increment_version.outputs.new_version }}'
+          release_name: 'v${{ steps.increment_version.outputs.new_version }}'
+          body:
+            'Release notes for version v${{
+            steps.increment_version.outputs.new_version }}'
           draft: false
           prerelease: false
