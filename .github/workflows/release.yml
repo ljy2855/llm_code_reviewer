@@ -3,7 +3,7 @@ name: 'Automated Versioning and Latest Tag Update'
 on:
   push:
     branches:
-      - main  # main 브랜치에 푸시될 때 실행
+      - main # main 브랜치에 푸시될 때 실행
 
 jobs:
   versioning:
@@ -57,8 +57,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: "v${{ env.new_version }}"
-          release_name: "v${{ env.new_version }}"
-          body: "Release notes for version v${{ env.new_version }}"
+          tag_name: 'v${{ env.new_version }}'
+          release_name: 'v${{ env.new_version }}'
+          body: 'Release notes for version v${{ env.new_version }}'
           draft: false
           prerelease: false

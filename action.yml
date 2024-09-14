@@ -54,7 +54,6 @@ runs:
     OLLAMA_MODEL: ${{ inputs.ollama_model }}
     PROMPT_TYPE: ${{ inputs.prompt_type }}
     PROMPT_LANGUAGE: ${{ inputs.prompt_language }}
-    
 
 branding:
   icon: 'code'
