@@ -1,0 +1,28 @@
+name: 'Default Code Review Workflow'
+
+on:
+  pull_request:
+    types: [opened]
+
+permissions:
+  contents: read # chagned files to read
+  pull-requests: write # write permission for PR related API
+
+jobs:
+  test-action:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Container Action
+        uses: ljy2855/llm_code_reviewer@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_owner: ${{ github.repository_owner }}
+          github_repository: ${{ github.repository }}
+          pr_number: ${{ github.event.pull_request.number }}
+          pr_title: ${{ github.event.pull_request.title }}
+          pr_body: ${{ github.event.pull_request.body }}
+          ollama_api_url: ${{ secrets.OLLAMA_API_URL }}
+          ollama_model: 'codellama:7b'
