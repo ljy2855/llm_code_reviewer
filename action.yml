@@ -2,6 +2,9 @@ name: 'LLM Code Review Action'
 description: 'Automatically reviews PRs using an external Ollama API'
 author: 'ljy2855'
 inputs:
+  github_token:
+    description: 'The GitHub token'
+    required: true
   github_owner:
     description: 'The repository owner'
     required: true
@@ -49,8 +52,7 @@ runs:
     OLLAMA_MODEL: ${{ inputs.ollama_model }}
     PROMPT_TYPE: ${{ inputs.prompt_type }}
     PROMPT_LANGUAGE: ${{ inputs.prompt_language }}
-    APP_ID: ${{ secrets.APP_ID }}
-    APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
+    GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
 
 branding:
   icon: 'code'

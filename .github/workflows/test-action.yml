@@ -10,10 +10,13 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}  # PR에서 체크아웃할 브랜치를 명확히 지정
 
       - name: Run Container Action
-        uses: ljy2855/llm_code_reviewer@main
+        uses: ./
         with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           github_owner: ${{ github.repository_owner }}
           github_repository: ${{ github.repository }}
           pr_number: ${{ github.event.pull_request.number }}

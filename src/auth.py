@@ -1,48 +1,48 @@
 import os
-import jwt
-import time
 import requests
 
-
-# 1. JWT 생성
-def generate_jwt():
-    # GitHub App 설정
-    app_id = os.getenv("APP_ID")
-    private_key = os.getenv("APP_PRIVATE_KEY")
-    payload = {
-        "iat": int(time.time()),  # Issued at time
-        "exp": int(time.time()) + (10 * 60),  # JWT 만료 시간 (최대 10분)
-        "iss": app_id,  # GitHub App ID
-    }
-
-    # RSA SHA256 서명을 사용해 JWT 생성
-    token = jwt.encode(payload, private_key, algorithm="RS256")
-    return token
+GITHUB_API_URL = "https://api.github.com"
+TOKEN_SERVER_URL = "https://github-token-server.vercel.app/api/generate-access-token"
 
 
-# 2. App Installation Token 요청
-def get_installation_token(jwt_token):
-    # 설치 ID 얻기 (여러 개의 설치가 있을 경우 선택 가능)
-    installations_url = "https://api.github.com/app/installations"
+def get_access_token():
+    installation_id = get_installation_id()
+    access_token = request_access_token_from_server(installation_id)
+    return access_token
+
+
+def get_installation_id():
+    GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
+    REPO_OWNER = os.getenv("GITHUB_OWNER")
+    REPO_NAME = os.getenv("GITHUB_REPOSITORY")
     headers = {
-        "Authorization": f"Bearer {jwt_token}",
-        "Accept": "application/vnd.github+json",
+        "Authorization": f"Bearer {GITHUB_TOKEN}",
+        "Accept": "application/vnd.github.v3+json",
     }
 
-    response = requests.get(installations_url, headers=headers)
-    response.raise_for_status()  # 오류 발생 시 예외 처리
-    installations = response.json()
-
-    # 설치된 ID를 얻음 (여기서는 첫 번째 설치를 사용)
-    installation_id = installations[0]["id"]
-
-    # Installation Token 요청
-    token_url = (
-        f"https://api.github.com/app/installations/{installation_id}/access_tokens"
+    response = requests.get(
+        f"{GITHUB_API_URL}/repos/{REPO_OWNER}/{REPO_NAME}/installation", headers=headers
     )
-    token_response = requests.post(token_url, headers=headers)
-    token_response.raise_for_status()  # 오류 발생 시 예외 처리
-    token_data = token_response.json()
 
-    # Access Token 반환
-    return token_data["token"]
+    if response.status_code == 200:
+        installation_id = response.json()["id"]
+        return installation_id
+    else:
+        raise Exception(
+            f"Error getting installation_id: {response.status_code} - {response.text}"
+        )
+
+
+def request_access_token_from_server(installation_id):
+    headers = {"Content-Type": "application/json"}
+    payload = {"installationId": installation_id}
+
+    response = requests.post(TOKEN_SERVER_URL, json=payload, headers=headers)
+
+    if response.status_code == 200:
+        access_token = response.json()["token"]
+        return access_token
+    else:
+        raise Exception(
+            f"Error getting access token from server: {response.status_code} - {response.text}"
+        )
