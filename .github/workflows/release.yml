@@ -3,7 +3,7 @@ name: 'Automated Versioning and Latest Tag Update'
 on:
   push:
     branches:
-      - main # Execute when there is a push to the main branch
+      - main # main 브랜치에 푸시될 때 실행
 
 jobs:
   versioning:
@@ -21,35 +21,35 @@ jobs:
       - name: Get the current version
         id: get_version
         run: |
-          VERSION=$(cat VERSION)  # Read the current version from the VERSION file
+          VERSION=$(cat VERSION)  # 현재 버전을 VERSION 파일에서 읽어옴
           echo "Current version: $VERSION"
-          echo "version=\"$VERSION\"" >> $GITHUB_ENV  # Double quote the version
+          echo "version=$VERSION" >> $GITHUB_ENV
 
       - name: Increment version number
         id: increment_version
         run: |
-          # Increment version number (increment the patch version)
+          # 버전 번호를 증가시키는 로직 (마지막 패치 버전을 1 증가시킴)
           NEW_VERSION=$(echo "${{ env.version }}" | awk -F. -v OFS=. '{$NF += 1 ; print}')
           echo "New version: $NEW_VERSION"
-          echo "new_version=\"$NEW_VERSION\"" >> $GITHUB_ENV  # Double quote the new version
+          echo "new_version=$NEW_VERSION" >> $GITHUB_ENV
 
       - name: Update VERSION file and commit
         run: |
           echo "${{ env.new_version }}" > VERSION
           git add VERSION
-          git commit -m "Bump version to \"${{ env.new_version }}\""  # Double quote the version in commit message
+          git commit -m "Bump version to ${{ env.new_version }}"
           git push origin main
 
       - name: Create and push new tag
         run: |
-          git tag "v${{ env.new_version }}"  # Ensure the new version tag is quoted
-          git push origin "v${{ env.new_version }}"  # Double quote the tag name
+          git tag "v${{ env.new_version }}"
+          git push origin "v${{ env.new_version }}"
 
       - name: Update v1 tag to point to the latest version
         run: |
-          git tag -d v1 || true  # Delete the existing v1 tag if it exists
-          git tag v1 "${{ github.sha }}"  # Add the new v1 tag, quoting the SHA
-          git push origin v1 --force  # Force push the updated v1 tag
+          git tag -d v1 || true  # 기존 v1 태그 삭제
+          git tag v1 ${{ github.sha }}  # 새로운 커밋에 v1 태그 추가
+          git push origin v1 --force  # v1 태그 강제 푸시
 
       - name: Create GitHub Release
         id: create_release
@@ -57,8 +57,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: "v${{ env.new_version }}"  # Ensure the new version tag is quoted
-          release_name: "v${{ env.new_version }}"  # Ensure the release name is quoted
-          body: "Release notes for version v${{ env.new_version }}"  # Ensure the release notes are quoted
+          tag_name: 'v${{ env.new_version }}'
+          release_name: 'v${{ env.new_version }}'
+          body: 'Release notes for version v${{ env.new_version }}'
           draft: false
           prerelease: false
